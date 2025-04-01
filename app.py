@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from dotenv import load_dotenv
 import os
 from models import db, User, Task
 from routes.auth_routes import auth_bp
 from routes.task_routes import task_bp
 from routes.admin_routes import admin_bp
 
-# Create Flask application
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 app = Flask(__name__)
 
-# Hardcoded secret key (intentionally insecure)
-app.secret_key = "super_secret_key_do_not_share"
-app.config['DEBUG'] = True  # Debug mode enabled (intentionally insecure)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+app.config['DEBUG'] = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'  
 
 # Configure SQLite database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///task_management.db'
@@ -47,4 +49,4 @@ def create_tables():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Debug mode enabled (intentionally insecure)
+    app.run(debug=False)  # Debug mode enabled (intentionally insecure)
